@@ -1,8 +1,13 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-import '../common/common.dart';
-import '../services/services.dart';
-import 'login.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_api_test/models/absent_api_res.dart';
+import 'package:flutter_api_test/services/absent_services.dart';
+import 'package:flutter_api_test/utils/login_utils.dart';
+
+import '../../common/common.dart';
+import '../../services/services.dart';
+import '../login.dart';
 
 class DashboardView extends StatelessWidget {
   @override
@@ -353,12 +358,23 @@ class _MenuActivityComponent extends StatelessWidget {
             _MenuComponent(
               titleMenu: "Absen Masuk",
               iconPath: 'assets/images/ic_absen_masuk.png',
-              onTap: () {},
+              onTap: () async {
+                await createPresence();
+
+                AbsenApiResponse absen = await formMasuk();
+                if (absen.error == null) {
+                  alertLogin(absen.description, context, '');
+                } else {
+                  alertLogin(absen.description, context, '');
+                }
+              },
             ),
             _MenuComponent(
               titleMenu: "Absen Pulang",
               iconPath: 'assets/images/ic_absen_pulang.png',
-              onTap: () {},
+              onTap: () async{
+                formKeluar();
+              },
             ),
             _MenuComponent(
               titleMenu: "Riwayat",
@@ -380,7 +396,7 @@ class _MenuActivityComponent extends StatelessWidget {
 class _MenuComponent extends StatelessWidget {
   final String titleMenu;
   final String iconPath;
-  final Function onTap;
+  final void Function()? onTap;
 
   _MenuComponent(
       {required this.titleMenu, required this.iconPath, required this.onTap});
@@ -394,7 +410,7 @@ class _MenuComponent extends StatelessWidget {
           borderRadius: BorderRadius.circular(6),
         ),
         child: InkWell(
-          onTap: () => onTap,
+          onTap: onTap,
           splashColor: Colors.black.withOpacity(0.4),
           borderRadius: BorderRadius.circular(6),
           child: Container(

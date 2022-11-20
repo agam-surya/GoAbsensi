@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
-const baseUrl = 'http://192.168.1.8:8000/api';
+const webUrl = 'http://192.168.1.6:8000';
+const baseUrl = webUrl + '/api';
 const loginUrl = baseUrl + '/login';
 const registerUrl = baseUrl + '/register';
 const logoutUrl = baseUrl + '/logout';
 const userUrl = baseUrl + '/user';
 const profileUrl = baseUrl + '/profile';
+const presenceCreate = baseUrl + '/presensi/create';
+const presenceIn = baseUrl + '/presensi/form_masuk';
+const presenceOut = baseUrl + '/presensi/form_keluar';
+const presenceShow = baseUrl + '/presensi';
 
 // --------ERROR---------
 const serverError = 'Server error';

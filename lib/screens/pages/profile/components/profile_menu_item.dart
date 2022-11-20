@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_api_test/common/common.dart';
+import 'package:flutter_api_test/size_config.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../../../size_config.dart';
 
 class ProfileMenuItem extends StatelessWidget {
   const ProfileMenuItem({

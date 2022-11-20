@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_api_test/common/common.dart';
+import 'package:flutter_api_test/screens/login.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../size_config.dart';
@@ -11,8 +13,6 @@ import '../../../models/api_response.dart';
 import '../../../models/user_prof.dart';
 import '../../../services/profile_services.dart';
 import '../../../services/services.dart';
-import '../../size_config.dart';
-import '../login.dart';
 import 'components/info.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -23,6 +23,10 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   Userprofile? user;
   bool loading = true;
+  Image imageFallback = Image.asset(
+    "assets/images/user_pic.png",
+    fit: BoxFit.cover,
+  );
 
   Future pickImage() async {
     try {
@@ -59,6 +63,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  getProfileImage() {
+    Widget img = imageFallback;
+    try {
+      img = CachedNetworkImage(
+        imageUrl: user!.image,
+        placeholder: (context, url) => const SizedBox.shrink(),
+        errorWidget: (context, url, error) => imageFallback,
+        imageBuilder: (context, imageProvider) => Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100),
+              image: DecorationImage(image: imageProvider, fit: BoxFit.cover)),
+        ),
+      );
+    } catch (e) {
+      print(e);
+    }
+    return img;
+  }
+
   @override
   void initState() {
     getUser();
@@ -76,15 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Column(
                 children: <Widget>[
                   Info(
-                    image: user!.image != 'image'
-                        ? DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(user!.image),
-                          )
-                        : const DecorationImage(
-                            fit: BoxFit.cover,
-                            image: AssetImage("assets/images/user_pic.png"),
-                          ),
+                    image: getProfileImage(),
                     name: user!.name,
                     position: user!.position,
                   ),

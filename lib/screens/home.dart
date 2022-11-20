@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_api_test/screens/profile/profile.dart';
 
 import '../common/common.dart';
-import 'dashboard_view.dart';
-import 'presence_view.dart';
+import 'pages/dashboard_view.dart';
+import 'pages/presence_view.dart';
+import 'pages/profile/profile.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -27,28 +27,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     actions: [
-    //       GestureDetector(
-    //           onTap: () {
-    //             logout().then((value) => Navigator.of(context)
-    //                 .pushAndRemoveUntil(
-    //                     MaterialPageRoute(builder: (context) => const Login()),
-    //                     (route) => false));
-    //           },
-    //           child: Icon(Icons.logout))
-    //     ],
-    //   ),
-    //   body: Center(
-    //     child: Column(
-    //       mainAxisAlignment: MainAxisAlignment.center,
-    //       children: [
-    //         Text('Home'),
-    //       ],
-    //     ),
-    //   ),
-    // );
 
     return Scaffold(
       body: Stack(

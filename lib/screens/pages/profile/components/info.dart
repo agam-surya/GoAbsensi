@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_api_test/common/common.dart';
-import '../../../size_config.dart';
+import 'package:flutter_api_test/size_config.dart';
 
 class Info extends StatelessWidget {
   const Info({
@@ -9,7 +9,7 @@ class Info extends StatelessWidget {
     required this.image,
   });
   final String name, position;
-  final DecorationImage image;
+  final Widget image;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,8 @@ class Info extends StatelessWidget {
                             color: screenColor,
                             width: defaultSize * 0.8, //8
                           ),
-                          image: image),
+                          ),
+                          child: image,
                     ),
                     Text(
                       name,

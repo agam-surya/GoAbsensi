@@ -53,10 +53,6 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Center(child: Text('login')),
-      //   backgroundColor: primaryColor,
-      // ),
       body: Container(
         height: deviceHeight(context),
         width: deviceWidth(context),

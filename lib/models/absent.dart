@@ -1,20 +1,15 @@
-import 'package:equatable/equatable.dart';
+class Absent {
+  int hadir;
+  int izin;
+  String description = '';
 
-class Absent extends Equatable {
-  final String userID;
-  final String userName;
-  final String userPhoto;
-  final DateTime absentTime;
-  final String absentType;
+  Absent({this.hadir = 0, this.izin = 0, this.description = ''});
 
-  Absent({
-    required this.userID,
-    required this.userName,
-    required this.userPhoto,
-    required this.absentTime,
-    required this.absentType,
-  });
-
-  @override
-  List<Object> get props => [userID, userName, userPhoto, absentTime, absentType];
+  factory Absent.fromJson(Map<String, dynamic> json) {
+    return Absent(
+      hadir: json['hadir'],
+      izin: json['izin'],
+      description: json['description'],
+    );
+  }
 }
