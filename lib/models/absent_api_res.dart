@@ -1,5 +1,5 @@
 class AbsenApiResponse {
-  Object? data;
+  List? data;
   String? error;
   String? description = '';
 

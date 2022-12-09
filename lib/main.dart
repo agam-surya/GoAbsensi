@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_api_test/screens/splash_screen.dart';
+import 'package:goAbsensi/screens/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());

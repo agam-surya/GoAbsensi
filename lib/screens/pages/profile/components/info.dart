@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_api_test/common/common.dart';
-import 'package:flutter_api_test/size_config.dart';
+import 'package:goAbsensi/common/common.dart';
+import 'package:goAbsensi/size_config.dart';
 
 class Info extends StatelessWidget {
   const Info({
@@ -15,13 +15,13 @@ class Info extends StatelessWidget {
   Widget build(BuildContext context) {
     double? defaultSize = SizeConfig.defaultSize;
     return SizedBox(
-      height: defaultSize! * 32, // 320
+      height: defaultSize! * 25, // 320
       child: Stack(
         children: <Widget>[
           ClipPath(
             clipper: CustomShape(),
             child: Container(
-              height: defaultSize * 25, //250
+              height: defaultSize * 18, //250
               color: primaryColor,
             ),
           ),
@@ -38,13 +38,13 @@ class Info extends StatelessWidget {
                       height: defaultSize * 18, //140
                       width: defaultSize * 18,
                       decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: screenColor,
-                            width: defaultSize * 0.8, //8
-                          ),
-                          ),
-                          child: image,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: screenColor,
+                          width: defaultSize * 0.8, //8
+                        ),
+                      ),
+                      child: image,
                     ),
                     Text(
                       name,

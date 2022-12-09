@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_api_test/common/common.dart';
-import 'package:flutter_api_test/screens/login.dart';
+import 'package:goAbsensi/common/common.dart';
+import 'package:goAbsensi/screens/login.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../size_config.dart';
@@ -14,6 +14,7 @@ import '../../../models/user_prof.dart';
 import '../../../services/profile_services.dart';
 import '../../../services/services.dart';
 import 'components/info.dart';
+import 'components/profile_menu_item.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -23,6 +24,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   Userprofile? user;
   bool loading = true;
+  late TextEditingController inputController;
   Image imageFallback = Image.asset(
     "assets/images/user_pic.png",
     fit: BoxFit.cover,
@@ -46,11 +48,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void getUser() async {
     ApiResponse response = await getUserProfile();
+    print(response.error);
     if (response.error == null) {
-      setState(() {
-        user = response.data as Userprofile;
-        loading = false;
-      });
+      if (this.mounted) {
+        setState(() {
+          user = response.data as Userprofile;
+          loading = false;
+        });
+      }
     } else if (response.error == unauthorized) {
       logout().then((value) => {
             Navigator.of(context).pushAndRemoveUntil(
@@ -82,11 +87,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return img;
   }
 
+  Future editDialog(
+      {required void submit(),
+      required String title,
+      required String hinttext}) async {
+    await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text(title),
+              content: TextField(
+                controller: inputController,
+                autofocus: true,
+                decoration: InputDecoration(hintText: hinttext),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Cancel"),
+                ),
+                TextButton(onPressed: submit, child: Text('Submit')),
+              ],
+            ));
+  }
+
   @override
   void initState() {
     getUser();
+    inputController = TextEditingController();
     super.initState();
   }
+
+  // @override
+  // void dispose() {
+  //   inputController.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -113,28 +150,73 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             MaterialStateProperty.all(primaryColor)),
                   ),
 
-                  // Center(child: user!.image == null ? Text("data") : Text(user!.image))
+                  const Center(
+                      child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Text(
+                      "Account Info",
+                      style:
+                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                    ),
+                  )),
 
-                  // ProfileMenuItem(
-                  //   iconSrc: "assets/icons/bookmark_fill.svg",
-                  //   title: "Saved Recipes",
-                  //   press: () {},
-                  // ),
-                  // ProfileMenuItem(
-                  //   iconSrc: "assets/icons/chef_color.svg",
-                  //   title: "Super Plan",
-                  //   press: () {},
-                  // ),
-                  // ProfileMenuItem(
-                  //   iconSrc: "assets/icons/language.svg",
-                  //   title: "Change Language",
-                  //   press: () {},
-                  // ),
-                  // ProfileMenuItem(
-                  //   iconSrc: "assets/icons/info.svg",
-                  //   title: "Help",
-                  //   press: () {},
-                  // ),
+                  profileMenuItem(
+                      icon: Icons.person_rounded,
+                      title: "Nama",
+                      subtitle: user!.name,
+                      editable: true,
+                      press: () async {
+                        await editDialog(
+                          title: "Edit Name",
+                          hinttext: user!.name,
+                          submit: () async {
+                            await updateProfileData(name: inputController.text);
+                            inputController.clear();
+                            Navigator.of(context).pop();
+                          },
+                        );
+                      }),
+                  profileMenuItem(
+                      icon: Icons.perm_phone_msg_rounded,
+                      title: "No. HP",
+                      subtitle: user!.phone,
+                      editable: true,
+                      press: () async {
+                        await editDialog(
+                          title: "Edit Phone Number",
+                          hinttext: user!.phone,
+                          submit: () async {
+                            await updateProfileData(
+                                phone: inputController.text);
+                            inputController.clear();
+                            Navigator.of(context).pop();
+                          },
+                        );
+                      }),
+                  profileMenuItem(
+                    icon: Icons.work_rounded,
+                    title: "Jabatan",
+                    subtitle: user!.position,
+                    press: () {},
+                  ),
+                  profileMenuItem(
+                    icon: Icons.pin_drop_rounded,
+                    title: "Alamat",
+                    subtitle: user!.address,
+                    editable: true,
+                    press: () async {
+                      await editDialog(
+                        title: "Edit Address",
+                        hinttext: user!.address,
+                        submit: () async {
+                          await updateProfileData(
+                              address: inputController.text);
+                          inputController.clear();
+                          Navigator.of(context).pop();
+                        },
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -148,16 +230,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
       elevation: 0,
       // On Android it's false by default
       centerTitle: true,
-      // actions: <Widget>[
-      //   IconButton(
-      //     onPressed: () {},
-      //     iconSize: 30,
-      //     icon: Icon(
-      //       Icons.settings_outlined,
-      //       color: darkColor,
-      //     ),
-      //   ),
-      // ],
     );
   }
+}
+
+profileMenuItem({
+  required icon,
+  required title,
+  required subtitle,
+  required press,
+  bool editable = false,
+}) {
+  double? defaultSize = SizeConfig.defaultSize;
+
+  return ListTile(
+    title: Text(title),
+    subtitle: Text(subtitle),
+    leading: CircleAvatar(
+      backgroundColor: primaryColor,
+      child: Icon(icon, color: screenColor),
+    ),
+    trailing: editable
+        ? const Icon(
+            Icons.mode_edit_outline,
+            color: primaryColor,
+          )
+        : null,
+    onTap: press,
+  );
 }

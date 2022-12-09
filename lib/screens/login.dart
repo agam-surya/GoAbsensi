@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_api_test/models/api_response.dart';
-import 'package:flutter_api_test/models/User.dart';
-import 'package:flutter_api_test/services/services.dart';
-import 'package:flutter_api_test/utils/login_utils.dart';
+import 'package:goAbsensi/models/api_response.dart';
+import 'package:goAbsensi/models/User.dart';
+import 'package:goAbsensi/services/services.dart';
+import 'package:goAbsensi/utils/login_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../common/common.dart';

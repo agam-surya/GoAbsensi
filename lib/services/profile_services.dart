@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter_api_test/services/services.dart';
+import 'package:goAbsensi/services/services.dart';
 
 import '../common/constant.dart';
 import '../models/api_response.dart';
@@ -33,7 +33,7 @@ Future<ApiResponse> getUserProfile() async {
         break;
     }
   } catch (e) {
-    apiResponse.error = serverError;
+    apiResponse.error = e.toString();
   }
   return apiResponse;
 }
@@ -82,5 +82,44 @@ Future<int> updateImage(File img) async {
   } catch (e) {
     statusCode = 400;
   }
+  return statusCode;
+}
+
+Future<int> updateProfileData({
+  String name = '',
+  String phone = '',
+  String address = '',
+}) async {
+  // int apiResponse = int();
+  int statusCode = 200;
+  try {
+    String token = await getToken();
+    final response =
+        await http.post(Uri.parse(profileUrl), headers: <String, String>{
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token'
+    }, body: {
+      "name": name,
+      "phone": phone,
+      "address": address,
+    });
+
+    statusCode = response.statusCode;
+    print(response.body);
+    // switch (response.statusCode) {
+    //   case 200:
+    //     // apiResponse.description = '';
+    //     break;
+    //   case 401:
+    //     // apiResponse.error = unauthorized;
+    //     break;
+    //   default:
+    //     // apiResponse.error = somethingwentwrong;
+    //     break;
+    // }
+  } catch (e) {
+    // apiResponse.error = serverError;
+  }
+
   return statusCode;
 }

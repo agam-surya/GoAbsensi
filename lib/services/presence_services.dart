@@ -1,26 +1,37 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_api_test/models/absent.dart';
-import 'package:flutter_api_test/models/absent_api_res.dart';
-import 'package:flutter_api_test/services/services.dart';
+import 'package:goAbsensi/models/absent.dart';
+import 'package:goAbsensi/models/absent_api_res.dart';
+import 'package:goAbsensi/services/services.dart';
 
 import '../common/constant.dart';
 
 import 'package:http/http.dart' as http;
 
-Future<AbsenApiResponse> showPresence() async {
-  AbsenApiResponse apiResponse = AbsenApiResponse();
+import '../models/history.dart';
+
+Future<HistoryApiResponse> showPresence() async {
+  HistoryApiResponse apiResponse = HistoryApiResponse();
   try {
     String token = await getToken();
-    final response = await http.post(Uri.parse(presenceShow),
+    final response = await http.post(
+        Uri.parse(presenceShow),
         headers: <String, String>{
           'Accept': 'application/json',
           'Authorization': 'Bearer $token'
         });
+    print(token);
     switch (response.statusCode) {
       case 200:
         apiResponse.description = '';
+        // print(jsonDecode(response.body)[0]);
+        // print("response.body");
+        apiResponse.data =
+            HistoryApiResponse.fromJson(jsonDecode(response.body)).data;
+        apiResponse.name =
+            HistoryApiResponse.fromJson(jsonDecode(response.body)).name;
+        // apiResponse.data = response.body as List;
         break;
       case 401:
         apiResponse.error = unauthorized;
@@ -32,10 +43,9 @@ Future<AbsenApiResponse> showPresence() async {
   } catch (e) {
     apiResponse.error = serverError;
   }
-
+  // print(apiResponse.data![0]['id']);
   return apiResponse;
 }
-
 
 Future<AbsenApiResponse> createPresence() async {
   AbsenApiResponse apiResponse = AbsenApiResponse();
@@ -125,53 +135,3 @@ Future<AbsenApiResponse> formKeluar() async {
   }
   return apiResponse;
 }
-
-
-
-
-// Future<int> updateImage(File img) async {
-//   int statusCode = 200;
-
-//   try {
-//     String token = await getToken();
-//     Map<String, String> headers = {
-//       'Accept': 'application/json',
-//       'Authorization': 'Bearer $token'
-//     };
-//     // open a bytestream
-//     var stream = new http.ByteStream(DelegatingStream.typed(img.openRead()));
-//     // get file length
-//     var length = await img.length();
-
-//     // create multipart request
-//     var request = new http.MultipartRequest("POST", Uri.parse(profileUrl));
-
-//     // multipart that takes file
-//     var multipartFile = new http.MultipartFile('image', stream, length,
-//         filename: basename(img.path));
-//     request.headers.addAll(headers);
-//     // add file to multipart
-//     request.files.add(multipartFile);
-
-//     // send
-//     var response = await request.send();
-
-//     // listen for response
-//     response.stream.transform(utf8.decoder).listen((value) {});
-
-//     // switch (response.statusCode) {
-//     //   case 200:
-//     //     apiResponse.data = Userprofile.fromJson(jsonDecode(response.));
-//     //     break;
-//     //   case 401:
-//     //     apiResponse.error = unauthorized;
-//     //     break;
-//     //   default:
-//     //     apiResponse.error = somethingwentwrong;
-//     //     break;
-//     // }
-//   } catch (e) {
-//     statusCode = 400;
-//   }
-//   return statusCode;
-// }

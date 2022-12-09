@@ -1,15 +1,20 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_api_test/models/absent_api_res.dart';
-import 'package:flutter_api_test/services/absent_services.dart';
-import 'package:flutter_api_test/utils/login_utils.dart';
+import 'package:goAbsensi/models/absent_api_res.dart';
+import 'package:goAbsensi/services/presence_services.dart';
+import 'package:goAbsensi/utils/login_utils.dart';
 
 import '../../common/common.dart';
 import '../../services/services.dart';
 import '../login.dart';
 
 class DashboardView extends StatelessWidget {
+  _HeaderDashboardComponent headerDashboard = _HeaderDashboardComponent();
+  _InformationsComponent information = _InformationsComponent();
+  _MenuActivityComponent menuActivity = _MenuActivityComponent();
+  _AnnouncementComponent announcement = _AnnouncementComponent();
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -31,19 +36,19 @@ class DashboardView extends StatelessWidget {
               SizedBox(
                 height: 32,
               ),
-              _HeaderDashboardComponent(),
+              headerDashboard,
               SizedBox(
                 height: 32,
               ),
-              _InformationsComponent(),
+              information,
               SizedBox(
                 height: 20,
               ),
-              _MenuActivityComponent(),
+              menuActivity,
               SizedBox(
                 height: 20,
               ),
-              _AnnouncementComponent(),
+              announcement,
               SizedBox(
                 height: 95,
               ),
@@ -363,6 +368,7 @@ class _MenuActivityComponent extends StatelessWidget {
 
                 AbsenApiResponse absen = await formMasuk();
                 if (absen.error == null) {
+                  print(absen.description);
                   alertLogin(absen.description, context, '');
                 } else {
                   alertLogin(absen.description, context, '');
@@ -372,7 +378,7 @@ class _MenuActivityComponent extends StatelessWidget {
             _MenuComponent(
               titleMenu: "Absen Pulang",
               iconPath: 'assets/images/ic_absen_pulang.png',
-              onTap: () async{
+              onTap: () async {
                 formKeluar();
               },
             ),

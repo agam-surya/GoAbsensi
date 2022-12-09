@@ -1,4 +1,4 @@
-import 'package:flutter_api_test/common/constant.dart';
+import 'package:goAbsensi/common/constant.dart';
 
 class Userprofile {
   String name;

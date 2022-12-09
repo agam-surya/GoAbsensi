@@ -1,10 +1,9 @@
 import 'dart:convert';
-import 'package:flutter_api_test/models/api_response.dart';
-import 'package:flutter_api_test/common/constant.dart';
+import 'package:goAbsensi/models/api_response.dart';
+import 'package:goAbsensi/common/constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/User.dart';
-
 
 
 // Future<ApiResponse> logout(String token) async {

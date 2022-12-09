@@ -27,7 +27,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Stack(
         children: [
@@ -99,7 +98,7 @@ class _HomeState extends State<Home> {
               ),
             ),
             BottomNavigationBarItem(
-              label: "Kehadiran",
+              label: "Histories",
               icon: Container(
                 margin: EdgeInsets.only(bottom: 4),
                 height: 24,
