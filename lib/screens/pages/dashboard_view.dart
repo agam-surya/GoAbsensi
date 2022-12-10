@@ -386,7 +386,8 @@ class _MenuActivityComponent extends StatelessWidget {
               titleMenu: "Absen Pulang",
               iconPath: 'assets/images/ic_absen_pulang.png',
               onTap: () async {
-                formKeluar();
+                var lok = await getLocation;
+                formKeluar(lat: lok["lat"]!, long: lok["long"]!);
               },
             ),
             _MenuComponent(

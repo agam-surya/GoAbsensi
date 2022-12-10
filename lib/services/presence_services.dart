@@ -72,7 +72,8 @@ Future<AbsenApiResponse> createPresence() async {
   return apiResponse;
 }
 
-Future<AbsenApiResponse> formMasuk({required String lat,required String long}) async {
+Future<AbsenApiResponse> formMasuk(
+    {required String lat, required String long}) async {
   AbsenApiResponse apiResponse = AbsenApiResponse();
   try {
     String token = await getToken();
@@ -110,7 +111,8 @@ Future<AbsenApiResponse> formMasuk({required String lat,required String long}) a
   return apiResponse;
 }
 
-Future<AbsenApiResponse> formKeluar() async {
+Future<AbsenApiResponse> formKeluar(
+    {required String lat, required String long}) async {
   AbsenApiResponse apiResponse = AbsenApiResponse();
   try {
     String token = await getToken();
@@ -118,6 +120,10 @@ Future<AbsenApiResponse> formKeluar() async {
         headers: <String, String>{
           'Accept': 'application/json',
           'Authorization': 'Bearer $token'
+        },
+        body: <String, String>{
+          'lat': lat,
+          'long': long
         });
     print(response.statusCode);
     switch (response.statusCode) {
