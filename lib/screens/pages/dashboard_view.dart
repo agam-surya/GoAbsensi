@@ -1,7 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:goAbsensi/models/absent_api_res.dart';
+import 'package:goAbsensi/screens/pages/presence_view.dart';
 import 'package:goAbsensi/services/presence_services.dart';
 import 'package:goAbsensi/utils/login_utils.dart';
 
@@ -12,8 +11,10 @@ import '../login.dart';
 class DashboardView extends StatelessWidget {
   _HeaderDashboardComponent headerDashboard = _HeaderDashboardComponent();
   _InformationsComponent information = _InformationsComponent();
-  _MenuActivityComponent menuActivity = _MenuActivityComponent();
   _AnnouncementComponent announcement = _AnnouncementComponent();
+  Future<Map<String, String>> getLocation;
+
+  DashboardView({required this.getLocation});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,7 @@ class DashboardView extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              menuActivity,
+              _MenuActivityComponent(getLocation: getLocation),
               SizedBox(
                 height: 20,
               ),
@@ -344,6 +345,10 @@ class _PresenceInfoComponent extends StatelessWidget {
 }
 
 class _MenuActivityComponent extends StatelessWidget {
+  Future<Map<String, String>> getLocation;
+
+  _MenuActivityComponent({required this.getLocation});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -365,8 +370,10 @@ class _MenuActivityComponent extends StatelessWidget {
               iconPath: 'assets/images/ic_absen_masuk.png',
               onTap: () async {
                 await createPresence();
+                var lok = await getLocation;
 
-                AbsenApiResponse absen = await formMasuk();
+                AbsenApiResponse absen =
+                    await formMasuk(lat: lok["lat"]!, long: lok["long"]!);
                 if (absen.error == null) {
                   print(absen.description);
                   alertLogin(absen.description, context, '');
@@ -385,7 +392,13 @@ class _MenuActivityComponent extends StatelessWidget {
             _MenuComponent(
               titleMenu: "Riwayat",
               iconPath: 'assets/images/ic_history.png',
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => PresenceView(),
+                  ),
+                );
+              },
             ),
             _MenuComponent(
               titleMenu: "Surat Izin",

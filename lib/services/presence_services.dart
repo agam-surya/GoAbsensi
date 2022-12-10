@@ -15,13 +15,11 @@ Future<HistoryApiResponse> showPresence() async {
   HistoryApiResponse apiResponse = HistoryApiResponse();
   try {
     String token = await getToken();
-    final response = await http.post(
-        Uri.parse(presenceShow),
+    final response = await http.post(Uri.parse(presenceShow),
         headers: <String, String>{
           'Accept': 'application/json',
           'Authorization': 'Bearer $token'
         });
-    print(token);
     switch (response.statusCode) {
       case 200:
         apiResponse.description = '';
@@ -74,7 +72,7 @@ Future<AbsenApiResponse> createPresence() async {
   return apiResponse;
 }
 
-Future<AbsenApiResponse> formMasuk() async {
+Future<AbsenApiResponse> formMasuk({required String lat,required String long}) async {
   AbsenApiResponse apiResponse = AbsenApiResponse();
   try {
     String token = await getToken();
@@ -82,6 +80,10 @@ Future<AbsenApiResponse> formMasuk() async {
         headers: <String, String>{
           'Accept': 'Application/json',
           'Authorization': 'Bearer $token'
+        },
+        body: <String, String>{
+          'lat': lat,
+          'long': long
         });
 
     switch (response.statusCode) {

@@ -8,37 +8,39 @@ import '../../models/history.dart';
 class PresenceView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Stack(
-        children: [
-          Container(
-            width: deviceWidth(context),
-            height: 140 - statusBarHeight(context),
-            decoration: const BoxDecoration(
-              color: primaryColor,
-              borderRadius: BorderRadius.only(
-                bottomLeft: const Radius.circular(24),
-                bottomRight: Radius.circular(24),
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Stack(
+          children: [
+            Container(
+              width: deviceWidth(context),
+              height: 140 - statusBarHeight(context),
+              decoration: const BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: const Radius.circular(24),
+                  bottomRight: Radius.circular(24),
+                ),
               ),
             ),
-          ),
-          Column(
-            children: [
-              const SizedBox(
-                height: 32,
-              ),
-              _HeaderPresenceComponent(),
-              const SizedBox(
-                height: 32,
-              ),
-              _ClockPresenceComponent(),
-              const SizedBox(
-                height: 24,
-              ),
-              _PresenceActivityComponent(),
-            ],
-          ),
-        ],
+            Column(
+              children: [
+                const SizedBox(
+                  height: 32,
+                ),
+                _HeaderPresenceComponent(),
+                const SizedBox(
+                  height: 32,
+                ),
+                _ClockPresenceComponent(),
+                const SizedBox(
+                  height: 24,
+                ),
+                _PresenceActivityComponent(),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -214,7 +216,7 @@ class _PresenceActivityComponentState
           Padding(
             padding: const EdgeInsets.only(left: defaultMargin),
             child: Text(
-              "Kehadiran Hari Ini ${dataHistory.length}",
+              "Riwayat Kehadiran $username",
               textAlign: TextAlign.left,
               style: semiBlackFont.copyWith(fontSize: 14),
             ),
@@ -360,7 +362,9 @@ class _UserPresenceComponent extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    absentTime + " WIB",
+                    (status.toLowerCase() == "izin")
+                        ? ''
+                        : (absentTime + " WIB"),
                     style: semiBlackFont.copyWith(
                       fontSize: 11,
                     ),
@@ -373,7 +377,11 @@ class _UserPresenceComponent extends StatelessWidget {
             flex: 1,
           ),
           Image.asset(
-            'assets/images/entry.png',
+            (status.toLowerCase() == "masuk")
+                ? 'assets/images/entry.png'
+                : (status.toLowerCase() == "keluar")
+                    ? "assets/images/ic_absen_pulang.png"
+                    : "assets/images/warn.png",
             width: 24,
             height: 24,
           ),
