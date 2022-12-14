@@ -40,7 +40,8 @@ dependencies:
   flutter_svg: ^1.1.6
   cached_network_image: ^3.2.0
   geolocator: ^9.0.2
-
+  internet_connection_checker: ^0.0.1+4 
+  restart_app: ^1.1.0+1 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

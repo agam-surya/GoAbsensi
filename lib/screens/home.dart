@@ -3,7 +3,7 @@ import 'package:geolocator/geolocator.dart';
 
 import '../common/common.dart';
 import 'pages/dashboard_view.dart';
-import 'pages/presence_view.dart';
+import 'pages/history/histories_view.dart';
 import 'pages/profile/profile.dart';
 
 class Home extends StatefulWidget {
@@ -55,7 +55,6 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    // presenceCreate()
     cekGPS();
     cekLocPerm();
     getLocation();
@@ -87,7 +86,7 @@ class _HomeState extends State<Home> {
                   },
                   children: [
                     DashboardView(getLocation: getLocation()),
-                    PresenceView(),
+                    HistoriesView(),
                     ProfileScreen(),
                   ],
                 ),
@@ -105,7 +104,7 @@ class _HomeState extends State<Home> {
       alignment: Alignment.bottomCenter,
       child: Container(
         height: 70,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(16),
@@ -115,7 +114,7 @@ class _HomeState extends State<Home> {
         child: BottomNavigationBar(
           elevation: 0,
           backgroundColor: Colors.transparent,
-          unselectedItemColor: Color(0xFFE5E5E5),
+          unselectedItemColor: const Color(0xFFE5E5E5),
           currentIndex: bottomNavBarIndex!,
           onTap: (index) {
             setState(() {
@@ -127,7 +126,7 @@ class _HomeState extends State<Home> {
             BottomNavigationBarItem(
               label: "Dashboard",
               icon: Container(
-                margin: EdgeInsets.only(bottom: 4),
+                margin: const EdgeInsets.only(bottom: 4),
                 height: 24,
                 child: Image.asset(
                   (bottomNavBarIndex == 0)
@@ -139,7 +138,7 @@ class _HomeState extends State<Home> {
             BottomNavigationBarItem(
               label: "Histories",
               icon: Container(
-                margin: EdgeInsets.only(bottom: 4),
+                margin: const EdgeInsets.only(bottom: 4),
                 height: 24,
                 child: Image.asset(
                   (bottomNavBarIndex == 1)
@@ -151,7 +150,7 @@ class _HomeState extends State<Home> {
             BottomNavigationBarItem(
               label: "Profile",
               icon: Container(
-                margin: EdgeInsets.only(bottom: 4),
+                margin: const EdgeInsets.only(bottom: 4),
                 height: 24,
                 child: Icon(
                   Icons.person_pin_sharp,

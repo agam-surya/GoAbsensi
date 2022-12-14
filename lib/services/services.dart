@@ -5,27 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/User.dart';
 
-
-// Future<ApiResponse> logout(String token) async {
-//   final response = await http.post(
-//     Uri.parse(logoutUrl),
-//     headers: <String, String>{
-//       'Accept': 'application/json',
-//       'Authorization': 'Bearer $token',
-//     },
-//   );
-
-//   switch (response.statusCode) {
-//     case 200:
-//   }
-
-//   if (response.statusCode == 200) {
-//     return Data.fromJson(jsonDecode(response.body));
-//   } else {
-//     throw Exception('Somthing wrong!');
-//   }
-// }
-
 Future<ApiResponse> login(String email, String password) async {
   ApiResponse apiResponse = ApiResponse();
   try {
@@ -64,7 +43,7 @@ Future<ApiResponse> getUserDetail() async {
           'Accept': 'application/json',
           'Authorization': 'Bearer $token'
         });
-
+    print(response.statusCode);
     switch (response.statusCode) {
       case 200:
         apiResponse.data = User.fromJson(jsonDecode(response.body));

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:goAbsensi/models/absent_api_res.dart';
-import 'package:goAbsensi/screens/pages/presence_view.dart';
+import 'package:goAbsensi/screens/pages/history/histories_view.dart';
 import 'package:goAbsensi/services/presence_services.dart';
-import 'package:goAbsensi/utils/login_utils.dart';
+import 'package:goAbsensi/utils/alert.dart';
 
 import '../../common/common.dart';
 import '../../services/services.dart';
@@ -374,12 +374,10 @@ class _MenuActivityComponent extends StatelessWidget {
 
                 AbsenApiResponse absen =
                     await formMasuk(lat: lok["lat"]!, long: lok["long"]!);
-                if (absen.error == null) {
-                  print(absen.description);
-                  alertLogin(absen.description, context, '');
-                } else {
-                  alertLogin(absen.description, context, '');
-                }
+                absenAlertdialog(
+                    err: absen.error,
+                    context: context,
+                    desc: absen.description);
               },
             ),
             _MenuComponent(
@@ -387,7 +385,12 @@ class _MenuActivityComponent extends StatelessWidget {
               iconPath: 'assets/images/ic_absen_pulang.png',
               onTap: () async {
                 var lok = await getLocation;
-                formKeluar(lat: lok["lat"]!, long: lok["long"]!);
+                AbsenApiResponse absen =
+                    await formKeluar(lat: lok["lat"]!, long: lok["long"]!);
+                absenAlertdialog(
+                    err: absen.error,
+                    context: context,
+                    desc: absen.description);
               },
             ),
             _MenuComponent(
@@ -396,7 +399,7 @@ class _MenuActivityComponent extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (BuildContext context) => PresenceView(),
+                    builder: (BuildContext context) => HistoriesView(),
                   ),
                 );
               },

@@ -14,7 +14,6 @@ import '../../../models/user_prof.dart';
 import '../../../services/profile_services.dart';
 import '../../../services/services.dart';
 import 'components/info.dart';
-import 'components/profile_menu_item.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override

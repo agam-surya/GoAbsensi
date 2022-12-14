@@ -16,7 +16,8 @@ class Userprofile {
 
   factory Userprofile.fromJson(Map<String, dynamic> json) {
     return Userprofile(
-        image: webUrl + '/storage/' + json['image'],
+        // ignore: prefer_interpolation_to_compose_strings
+        image: '$webUrl/storage/' + json['image'],
         name: json['name'],
         phone: json['phone'],
         address: json['address'],

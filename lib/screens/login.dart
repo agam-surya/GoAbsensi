@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:goAbsensi/models/api_response.dart';
 import 'package:goAbsensi/models/User.dart';
 import 'package:goAbsensi/services/services.dart';
-import 'package:goAbsensi/utils/login_utils.dart';
+import 'package:goAbsensi/utils/alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../common/common.dart';
@@ -33,7 +33,8 @@ class _LoginState extends State<Login> {
         setState(() {
           loading = false;
         });
-        alertLogin(response.error, context, response.description);
+        alertdialog(
+            err: response.error, context: context, desc: response.description);
       }
     } catch (e) {
       print(e);

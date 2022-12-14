@@ -6,8 +6,8 @@ class CustomAlertDialog extends StatelessWidget {
   final String? description;
   final String? imagePath;
 
-  CustomAlertDialog({this.title, this.description, this.imagePath});
-  
+  CustomAlertDialog({this.title, this.description = '', this.imagePath});
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(

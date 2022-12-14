@@ -1,6 +1,6 @@
 class AbsenApiResponse {
   List? data;
-  String? error;
+  String? error = '';
   String? description = '';
 
   AbsenApiResponse({this.description});

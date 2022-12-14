@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const webUrl = 'http://192.168.1.5:8000';
+const webUrl = 'http://10.252.28.100:8000';
 const baseUrl = webUrl + '/api';
 const loginUrl = baseUrl + '/login';
 const registerUrl = baseUrl + '/register';

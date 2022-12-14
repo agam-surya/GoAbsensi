@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
-import 'package:goAbsensi/models/absent.dart';
 import 'package:goAbsensi/models/absent_api_res.dart';
 import 'package:goAbsensi/services/services.dart';
 
@@ -92,8 +90,12 @@ Future<AbsenApiResponse> formMasuk(
         apiResponse.description = 'Berhasil melakukan Absensi';
         break;
       case 401:
-        apiResponse.error = unauthorized;
-        apiResponse.description = '401';
+        apiResponse.error = '401';
+        apiResponse.description =
+            AbsenApiResponse.fromJson(jsonDecode(response.body)).description;
+        break;
+      case 420:
+        apiResponse.error = '420';
         apiResponse.description =
             AbsenApiResponse.fromJson(jsonDecode(response.body)).description;
         break;
@@ -128,11 +130,18 @@ Future<AbsenApiResponse> formKeluar(
     print(response.statusCode);
     switch (response.statusCode) {
       case 200:
-        // apiResponse.description = jsonDecode(response.body);
-        print(jsonDecode(response.body));
+        apiResponse.description =
+            AbsenApiResponse.fromJson(jsonDecode(response.body)).description;
         break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.description =
+            AbsenApiResponse.fromJson(jsonDecode(response.body)).description;
+        break;
+      case 420:
+        apiResponse.error = '420';
+        apiResponse.description =
+            AbsenApiResponse.fromJson(jsonDecode(response.body)).description;
         break;
       default:
         apiResponse.error = somethingwentwrong;
