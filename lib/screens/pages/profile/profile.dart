@@ -14,6 +14,7 @@ import '../../../models/user_prof.dart';
 import '../../../services/profile_services.dart';
 import '../../../services/services.dart';
 import 'components/info.dart';
+import 'components/photo_profile_detail.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -67,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  getProfileImage() {
+  getProfileImage({double radius=0}) {
     Widget img = imageFallback;
     try {
       img = CachedNetworkImage(
@@ -76,7 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         errorWidget: (context, url, error) => imageFallback,
         imageBuilder: (context, imageProvider) => Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
+              borderRadius: BorderRadius.circular(radius),
               image: DecorationImage(image: imageProvider, fit: BoxFit.cover)),
         ),
       );
@@ -135,7 +136,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Column(
                 children: <Widget>[
                   Info(
-                    image: getProfileImage(),
+                    image: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: ((context) => PhotoProfileDetail(
+                                      img: getProfileImage()))));
+                        },
+                        child: Hero(
+                            tag: "PhotoProfile", child: getProfileImage(radius: 100))),
                     name: user!.name,
                     position: user!.position,
                   ),

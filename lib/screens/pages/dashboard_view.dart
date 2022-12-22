@@ -1,10 +1,15 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:goAbsensi/models/absent_api_res.dart';
 import 'package:goAbsensi/screens/pages/history/histories_view.dart';
 import 'package:goAbsensi/services/presence_services.dart';
 import 'package:goAbsensi/utils/alert.dart';
+import 'package:intl/intl.dart';
 
 import '../../common/common.dart';
+import '../../common/constant.dart';
 import '../../services/services.dart';
 import '../login.dart';
 
@@ -222,25 +227,6 @@ class _LogoutAlertComponent extends StatelessWidget {
 class _InformationsComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // return Consumer<UserProvider>(
-    //   builder: (context, userProvider, _) {
-    // if (imageFileToUpload != null) {
-    //   uploadImage(imageFileToUpload!).then((downloadURL) {
-    //     imageFileToUpload = null;
-    //     Provider.of<UserProvider>(context, listen: false).updateUser(photoURL: downloadURL);
-    //   });
-    // }
-
-    // if (userProvider.user == null) {
-    //   return Padding(
-    //     padding: const EdgeInsets.symmetric(vertical: 18),
-    //     child: CircularProgressIndicator(
-    //       color: whiteColor,
-    //       // size: 50,
-    //     ),
-    //   );
-    // }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -344,10 +330,151 @@ class _PresenceInfoComponent extends StatelessWidget {
   }
 }
 
-class _MenuActivityComponent extends StatelessWidget {
+class _MenuActivityComponent extends StatefulWidget {
   Future<Map<String, String>> getLocation;
 
   _MenuActivityComponent({required this.getLocation});
+
+  @override
+  State<_MenuActivityComponent> createState() => _MenuActivityComponentState();
+}
+
+class _MenuActivityComponentState extends State<_MenuActivityComponent> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  TextEditingController desC = TextEditingController();
+  TextEditingController dateC = TextEditingController();
+  TextEditingController fileC = TextEditingController();
+  bool loading = false;
+
+  late File filePickerVal;
+
+  selectFile() async {
+    FilePickerResult? result = await FilePicker.platform
+        .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+    if (result != null) {
+      setState(() {
+        fileC.text = result.files.single.name;
+        filePickerVal = File(result.files.single.path.toString());
+      });
+    } else {
+      // User canceled the picker
+    }
+  }
+
+  Future editDialog(
+      {required void Function() submit,
+      required String title,
+      required String hinttext}) async {
+    await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text(title),
+              content: Container(
+                height: 400,
+                width: deviceWidth(context) * 0.6,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: Form(
+                        key: formKey,
+                        child: ListView(
+                          children: [
+                            TextFormField(
+                              controller: fileC,
+                              validator: (val) =>
+                                  val!.isEmpty ? 'File Harus Diisi' : null,
+                              decoration: inputDecoration('File'),
+                              onTap: () {
+                                selectFile();
+                              },
+                            ),
+                            const SizedBox(height: defaultMargin),
+                            TextFormField(
+                              controller: desC,
+                              validator: (val) => val!.isEmpty
+                                  ? 'Description Harus Diisi'
+                                  : null,
+                              decoration: inputDecoration('Description'),
+                            ),
+                            const SizedBox(height: defaultMargin),
+                            TextFormField(
+                              controller: dateC,
+                              validator: (val) =>
+                                  val!.isEmpty ? 'Tanggal Harus Diisi' : null,
+                              decoration: inputDecoration("Tanggal Akhir Izin"),
+                              onTap: () async {
+                                DateTime d = DateTime.now();
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
+
+                                DateTime date = (await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime.now(),
+                                    lastDate: DateTime(d.year, d.month,
+                                        d.day + 3, 0, 0, 0, 0, 0)))!;
+
+                                // dateC.text = date.toIso8601String();
+
+                                dateC.text =
+                                    DateFormat('yyyy-MM-dd').format(date);
+
+                                print(dateC.text);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {},
+                            style: ButtonStyle(
+                              fixedSize: MaterialStateProperty.all(
+                                  const Size(100, 50)),
+                            ),
+                            child: Text("WFH"),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              if (formKey.currentState!.validate()) {
+                                desC.clear();
+                                dateC.clear();
+                                fileC.clear();
+                                Izin(
+                                    desc: desC.text,
+                                    tgl: dateC.text,
+                                    filePickerVal: filePickerVal);
+                                Navigator.of(context).pop();
+                              }
+                            },
+                            style: ButtonStyle(
+                              fixedSize: MaterialStateProperty.all(
+                                  const Size(100, 50)),
+                            ),
+                            child: const Text("Sakit"),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // actions: [
+              //   TextButton(
+              //     onPressed: () {
+              //       Navigator.of(context).pop();
+              //     },
+              //     child: Text("Cancel"),
+              //   ),
+              //   TextButton(onPressed: submit, child: Text('Submit')),
+              // ],
+            ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -370,7 +497,7 @@ class _MenuActivityComponent extends StatelessWidget {
               iconPath: 'assets/images/ic_absen_masuk.png',
               onTap: () async {
                 await createPresence();
-                var lok = await getLocation;
+                var lok = await widget.getLocation;
 
                 AbsenApiResponse absen =
                     await formMasuk(lat: lok["lat"]!, long: lok["long"]!);
@@ -384,7 +511,7 @@ class _MenuActivityComponent extends StatelessWidget {
               titleMenu: "Absen Pulang",
               iconPath: 'assets/images/ic_absen_pulang.png',
               onTap: () async {
-                var lok = await getLocation;
+                var lok = await widget.getLocation;
                 AbsenApiResponse absen =
                     await formKeluar(lat: lok["lat"]!, long: lok["long"]!);
                 absenAlertdialog(
@@ -405,9 +532,12 @@ class _MenuActivityComponent extends StatelessWidget {
               },
             ),
             _MenuComponent(
-              titleMenu: "Surat Izin",
+              titleMenu: "Izin",
               iconPath: 'assets/images/ic_letter.png',
-              onTap: () {},
+              onTap: () async {
+                await editDialog(
+                    submit: () {}, title: "Izin", hinttext: "Izin");
+              },
             ),
           ],
         ),

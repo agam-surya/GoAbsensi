@@ -11,7 +11,6 @@ Future<ApiResponse> login(String email, String password) async {
     final response = await http.post(Uri.parse(loginUrl),
         headers: <String, String>{'Accept': 'application/json'},
         body: {'email': email, 'password': password});
-
     switch (response.statusCode) {
       case 200:
         apiResponse.data = User.fromJson(jsonDecode(response.body));
@@ -43,7 +42,6 @@ Future<ApiResponse> getUserDetail() async {
           'Accept': 'application/json',
           'Authorization': 'Bearer $token'
         });
-    print(response.statusCode);
     switch (response.statusCode) {
       case 200:
         apiResponse.data = User.fromJson(jsonDecode(response.body));

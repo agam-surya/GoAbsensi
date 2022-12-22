@@ -94,18 +94,25 @@ Future<int> updateProfileData({
   int statusCode = 200;
   try {
     String token = await getToken();
-    final response =
-        await http.post(Uri.parse(profileUrl), headers: <String, String>{
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token'
-    }, body: {
-      "name": name,
-      "phone": phone,
-      "address": address,
-    });
+    final response = await http.post(Uri.parse(profileUrl),
+        headers: <String, String>{
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: name != ''
+            ? {
+                "name": name,
+              }
+            : phone != ''
+                ? {
+                    "phone": phone,
+                  }
+                : {
+                    "address": address,
+                  });
 
     statusCode = response.statusCode;
-    print(response.body);
+    print(response.statusCode);
     // switch (response.statusCode) {
     //   case 200:
     //     // apiResponse.description = '';

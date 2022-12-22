@@ -3,10 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:restart_app/restart_app.dart';
 
 import '../common/common.dart';
-import '../common/constant.dart';
 import '../models/api_response.dart';
 import '../services/services.dart';
 import '../widgets/custom_alert_dialog.dart';
@@ -21,21 +19,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  // Future<void> cekInternetConection() async {
-  //   // Check internet connection with singleton (no custom values allowed)
-  //   await execute(InternetConnectionChecker());
-
-  //   // Create customized instance which can be registered via dependency injection
-  //   final InternetConnectionChecker customInstance =
-  //       InternetConnectionChecker.createInstance(
-  //     checkTimeout: const Duration(seconds: 1),
-  //     checkInterval: const Duration(seconds: 1),
-  //   );
-
-  //   // Check internet connection with created instance
-  //   await execute(customInstance);
-  // }
-
   Future<bool> execute(
     InternetConnectionChecker internetConnectionChecker,
   ) async {
@@ -76,33 +59,48 @@ class _SplashScreenState extends State<SplashScreen> {
   void _loadUserInfo() async {
     String token = await getToken();
     bool conn = await execute(InternetConnectionChecker());
+
     if (token == '') {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const Login()),
           (route) => false);
     } else {
-      ApiResponse response = await getUserDetail();
-      if (response.error == null) {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const Home()),
-            (route) => false);
-      }
-      if (!conn && response.error == null) {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const Home()),
-            (route) => false);
-      } else if (!conn && response.error != null) {
-        showDialog(
+      try {
+        ApiResponse response =
+            await getUserDetail().timeout(const Duration(seconds: 4));
+
+        if (response.error == null) {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const Home()),
+              (route) => false);
+        } else if (!conn && response.error == null) {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const Home()),
+              (route) => false);
+        } else if (!conn && response.error != null) {
+          showDialog(
+              context: context,
+              builder: (context) => CustomAlertDialog(
+                  title: "Your Connection is Disabled",
+                  description:
+                      "Enable Your Internet Connection then restart your app",
+                  imagePath: 'assets/images/logout.png'));
+        } else {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const Login()),
+              (route) => false);
+        }
+      } on TimeoutException catch (e) {
+        return showDialog(
             context: context,
             builder: (context) => CustomAlertDialog(
-                title: "Your Connection is Disabled",
+                title: "Your Connection is Slow",
                 description:
-                    "Enable Your Internet Connection then restart your app",
-                imagePath: 'assets/images/logout.png'));
-      } else {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const Login()),
-            (route) => false);
+                    "Check or Enable Your Internet Connection then restart your app",
+                imagePath: 'assets/images/logout.png')).then((value) =>
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => SplashScreen()),
+                (route) => false));
       }
     }
   }

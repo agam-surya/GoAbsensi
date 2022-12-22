@@ -36,7 +36,8 @@ class _PresenceActivityComponentState extends State<PresenceActivityComponent> {
               "absentDate": "${resBody[i]['presence_date']}",
               "waktu": "${resBody[i]['presence_out_time']}",
             });
-          } else {
+          } else if (resBody[i]['presence_enter_time'] == null &&
+              resBody[i]['presence_out_time'] == null) {
             dataHistory.add({
               "status": "Izin",
               "absentDate": "${resBody[i]['presence_date']}",
@@ -115,12 +116,16 @@ class _PresenceActivityComponentState extends State<PresenceActivityComponent> {
                   var datas = dataHistory;
                   var data = datas[index];
 
-                  return UserPresenceComponent(
-                    userName: username,
-                    absentTime: data['waktu'],
-                    absentDate: data['absentDate'],
-                    status: data['status'],
-                  );
+                  return datas.length == 0
+                      ? Center(
+                          child: Text("Data History Kehadiran Anda Kosong"),
+                        )
+                      : UserPresenceComponent(
+                          userName: username,
+                          absentTime: data['waktu'],
+                          absentDate: data['absentDate'],
+                          status: data['status'],
+                        );
                 }),
           )
         ],
