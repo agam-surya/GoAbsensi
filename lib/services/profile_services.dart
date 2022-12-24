@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:goAbsensi/services/services.dart';
+import 'package:goAbsensi/services/main_services.dart';
 
-import '../common/constant.dart';
+import '../common/common.dart';
 import '../models/api_response.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
@@ -67,18 +67,6 @@ Future<int> updateImage(File img) async {
 
     // listen for response
     response.stream.transform(utf8.decoder).listen((value) {});
-
-    // switch (response.statusCode) {
-    //   case 200:
-    //     apiResponse.data = Userprofile.fromJson(jsonDecode(response.));
-    //     break;
-    //   case 401:
-    //     apiResponse.error = unauthorized;
-    //     break;
-    //   default:
-    //     apiResponse.error = somethingwentwrong;
-    //     break;
-    // }
   } catch (e) {
     statusCode = 400;
   }
@@ -112,18 +100,6 @@ Future<int> updateProfileData({
                   });
 
     statusCode = response.statusCode;
-    print(response.statusCode);
-    // switch (response.statusCode) {
-    //   case 200:
-    //     // apiResponse.description = '';
-    //     break;
-    //   case 401:
-    //     // apiResponse.error = unauthorized;
-    //     break;
-    //   default:
-    //     // apiResponse.error = somethingwentwrong;
-    //     break;
-    // }
   } catch (e) {
     // apiResponse.error = serverError;
   }

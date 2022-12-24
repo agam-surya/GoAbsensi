@@ -8,11 +8,10 @@ import 'package:goAbsensi/screens/login.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../size_config.dart';
-import '../../../common/constant.dart';
 import '../../../models/api_response.dart';
 import '../../../models/user_prof.dart';
 import '../../../services/profile_services.dart';
-import '../../../services/services.dart';
+import '../../../services/main_services.dart';
 import 'components/info.dart';
 import 'components/photo_profile_detail.dart';
 

@@ -5,12 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:goAbsensi/models/absent_api_res.dart';
 import 'package:goAbsensi/screens/pages/history/histories_view.dart';
 import 'package:goAbsensi/services/presence_services.dart';
-import 'package:goAbsensi/utils/alert.dart';
 import 'package:intl/intl.dart';
 
 import '../../common/common.dart';
-import '../../common/constant.dart';
-import '../../services/services.dart';
+import '../../services/main_services.dart';
 import '../login.dart';
 
 class DashboardView extends StatelessWidget {
@@ -370,7 +368,7 @@ class _MenuActivityComponentState extends State<_MenuActivityComponent> {
         builder: (context) => AlertDialog(
               title: Text(title),
               content: Container(
-                height: 400,
+                height: 300,
                 width: deviceWidth(context) * 0.6,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -380,14 +378,40 @@ class _MenuActivityComponentState extends State<_MenuActivityComponent> {
                         key: formKey,
                         child: ListView(
                           children: [
-                            TextFormField(
-                              controller: fileC,
-                              validator: (val) =>
-                                  val!.isEmpty ? 'File Harus Diisi' : null,
-                              decoration: inputDecoration('File'),
-                              onTap: () {
-                                selectFile();
-                              },
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: fileC,
+                                    // validator: (val) => val!.isEmpty
+                                    //     ? 'File Harus Diisi'
+                                    //     : null,
+                                    decoration: inputDecoration('File'),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                ElevatedButton.icon(
+                                  icon: const Icon(
+                                    Icons.upload_file,
+                                    color: Colors.white,
+                                    size: 24.0,
+                                  ),
+                                  label: const Text(''),
+                                  onPressed: () {
+                                    selectFile();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: primaryColor,
+                                    minimumSize: const Size(76, 48),
+                                    maximumSize: const Size(100, 48),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5.0),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: defaultMargin),
                             TextFormField(
@@ -398,30 +422,53 @@ class _MenuActivityComponentState extends State<_MenuActivityComponent> {
                               decoration: inputDecoration('Description'),
                             ),
                             const SizedBox(height: defaultMargin),
-                            TextFormField(
-                              controller: dateC,
-                              validator: (val) =>
-                                  val!.isEmpty ? 'Tanggal Harus Diisi' : null,
-                              decoration: inputDecoration("Tanggal Akhir Izin"),
-                              onTap: () async {
-                                DateTime d = DateTime.now();
-                                FocusScope.of(context)
-                                    .requestFocus(new FocusNode());
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: dateC,
+                                    // validator: (val) => val!.isEmpty
+                                    //     ? 'Tanggal Harus Diisi'
+                                    //     : null,
+                                    decoration:
+                                        inputDecoration("Tanggal Akhir Izin"),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                ElevatedButton.icon(
+                                  icon: const Icon(
+                                    Icons.calendar_today,
+                                    color: Colors.white,
+                                    size: 24.0,
+                                  ),
+                                  label: const Text(''),
+                                  onPressed: () async {
+                                    DateTime d = DateTime.now();
+                                    FocusScope.of(context)
+                                        .requestFocus(FocusNode());
 
-                                DateTime date = (await showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime.now(),
-                                    lastDate: DateTime(d.year, d.month,
-                                        d.day + 3, 0, 0, 0, 0, 0)))!;
+                                    DateTime date = (await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime.now(),
+                                        lastDate: DateTime(d.year, d.month,
+                                            d.day + 3, 0, 0, 0, 0, 0)))!;
 
-                                // dateC.text = date.toIso8601String();
-
-                                dateC.text =
-                                    DateFormat('yyyy-MM-dd').format(date);
-
-                                print(dateC.text);
-                              },
+                                    dateC.text =
+                                        DateFormat('yyyy-MM-dd').format(date);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: primaryColor,
+                                    minimumSize: const Size(76, 48),
+                                    maximumSize: const Size(100, 48),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5.0),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -432,8 +479,22 @@ class _MenuActivityComponentState extends State<_MenuActivityComponent> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              if (formKey.currentState!.validate()) {
+                                izin(
+                                    desc: desC.text,
+                                    // tgl: dateC.text,
+                                    // filePickerVal: filePickerVal,
+                                    permTypeId: '1');
+                                desC.clear();
+                                dateC.clear();
+                                fileC.clear();
+                                Navigator.of(context).pop();
+                              }
+                            },
                             style: ButtonStyle(
+                              backgroundColor: MaterialStateColor.resolveWith(
+                                  (states) => primaryColor),
                               fixedSize: MaterialStateProperty.all(
                                   const Size(100, 50)),
                             ),
@@ -442,17 +503,20 @@ class _MenuActivityComponentState extends State<_MenuActivityComponent> {
                           ElevatedButton(
                             onPressed: () {
                               if (formKey.currentState!.validate()) {
+                                izin(
+                                    desc: desC.text,
+                                    tgl: dateC.text,
+                                    filePickerVal: filePickerVal,
+                                    permTypeId: '2');
                                 desC.clear();
                                 dateC.clear();
                                 fileC.clear();
-                                Izin(
-                                    desc: desC.text,
-                                    tgl: dateC.text,
-                                    filePickerVal: filePickerVal);
                                 Navigator.of(context).pop();
                               }
                             },
                             style: ButtonStyle(
+                              backgroundColor: MaterialStateColor.resolveWith(
+                                  (states) => primaryColor),
                               fixedSize: MaterialStateProperty.all(
                                   const Size(100, 50)),
                             ),
@@ -464,15 +528,6 @@ class _MenuActivityComponentState extends State<_MenuActivityComponent> {
                   ],
                 ),
               ),
-              // actions: [
-              //   TextButton(
-              //     onPressed: () {
-              //       Navigator.of(context).pop();
-              //     },
-              //     child: Text("Cancel"),
-              //   ),
-              //   TextButton(onPressed: submit, child: Text('Submit')),
-              // ],
             ));
   }
 

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+part of "common.dart";
 
 const webUrl = 'https://cobaabensipw.000webhostapp.com';
 const baseUrl = webUrl + '/api';
@@ -11,7 +11,7 @@ const presenceCreate = baseUrl + '/presensi/create';
 const presenceIn = baseUrl + '/presensi/form_masuk';
 const presenceOut = baseUrl + '/presensi/form_keluar';
 const presenceShow = baseUrl + '/presensi';
-const izinUrl = baseUrl + '/permission';
+const izinUrl = baseUrl + '/permission-create';
 
 // --------ERROR---------
 const serverError = 'Server error';

@@ -6,7 +6,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import '../common/common.dart';
 import '../models/api_response.dart';
-import '../services/services.dart';
+import '../services/main_services.dart';
 import '../widgets/custom_alert_dialog.dart';
 import 'home.dart';
 import 'login.dart';
@@ -14,8 +14,6 @@ import 'login.dart';
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
-
-  static String routeName = '/splash_screen';
 }
 
 class _SplashScreenState extends State<SplashScreen> {
@@ -98,9 +96,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 description:
                     "Check or Enable Your Internet Connection then restart your app",
                 imagePath: 'assets/images/logout.png')).then((value) =>
-            Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => SplashScreen()),
-                (route) => false));
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => SplashScreen())));
       }
     }
   }

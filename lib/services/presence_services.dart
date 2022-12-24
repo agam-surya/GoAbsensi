@@ -3,9 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:goAbsensi/models/absent_api_res.dart';
-import 'package:goAbsensi/services/services.dart';
-
-import '../common/constant.dart';
+import 'package:goAbsensi/services/main_services.dart';
+import '../common/common.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -155,32 +154,34 @@ Future<AbsenApiResponse> formKeluar(
   return apiResponse;
 }
 
-Future<AbsenApiResponse> Izin(
-    {required String desc, required String tgl, required File filePickerVal}) async {
+Future<AbsenApiResponse> izin(
+    {required String desc,
+    String? tgl,
+    required String permTypeId,
+    File? filePickerVal}) async {
   AbsenApiResponse apiResponse = AbsenApiResponse();
   try {
-
     String token = await getToken();
     Map<String, String> headers = {
-      'Content-Type': 'application/json; charset=UTF-8',
+      'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     };
     //post date
-    var response = http.MultipartRequest(
-        'POST', Uri.parse('https://api.sobatcoding.com/testing/upload'));
+    var response = http.MultipartRequest('POST', Uri.parse(izinUrl));
 
     response.headers.addAll(headers);
-    response.fields['description'] = desc;
-    response.fields['tanggal'] = tgl;
+    response.fields['desciption'] = desc;
+    response.fields['permission_type_id'] = permTypeId;
+    response.fields['tanggal'] = tgl!;
 
     response.files.add(http.MultipartFile('file',
-        filePickerVal!.readAsBytes().asStream(), filePickerVal!.lengthSync(),
-        filename: filePickerVal!.path.split("/").last));
+        filePickerVal!.readAsBytes().asStream(), filePickerVal.lengthSync(),
+        filename: filePickerVal.path.split("/").last));
 
     var res = await response.send();
     var responseBytes = await res.stream.toBytes();
     var responseString = utf8.decode(responseBytes);
-
+    print(res.request!);
     //debug
     debugPrint("response code: " + res.statusCode.toString());
     debugPrint("response: " + responseString.toString());

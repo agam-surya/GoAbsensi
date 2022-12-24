@@ -1,4 +1,4 @@
-import 'package:goAbsensi/common/constant.dart';
+import '../common/common.dart';
 
 class Userprofile {
   String name;
