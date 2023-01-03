@@ -1,23 +1,89 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:goAbsensi/models/absent_api_res.dart';
+import 'package:goAbsensi/models/spk.dart';
 import 'package:goAbsensi/screens/pages/history/histories_view.dart';
 import 'package:goAbsensi/services/presence_services.dart';
 import 'package:intl/intl.dart';
 
 import '../../common/common.dart';
+import '../../models/history.dart';
 import '../../services/main_services.dart';
 import '../login.dart';
 
-class DashboardView extends StatelessWidget {
-  _HeaderDashboardComponent headerDashboard = _HeaderDashboardComponent();
-  _InformationsComponent information = _InformationsComponent();
-  _AnnouncementComponent announcement = _AnnouncementComponent();
+class DashboardView extends StatefulWidget {
   Future<Map<String, String>> getLocation;
+  bool isMount = true;
 
   DashboardView({required this.getLocation});
+
+  @override
+  State<DashboardView> createState() => _DashboardViewState();
+}
+
+class _DashboardViewState extends State<DashboardView> {
+  _HeaderDashboardComponent headerDashboard = _HeaderDashboardComponent();
+
+  List<dynamic>? spk = [];
+
+  int hadir = 0;
+  int sakit = 0;
+  int izin = 0;
+  int wfh = 0;
+
+  getHistory() async {
+    HistoryApiResponse res = await showPresence();
+
+    final resBody = res.data as List;
+    final perm = res.permission as List;
+    if (widget.isMount) {
+      setState(() {
+        for (var i = 0; i < perm.length; i++) {
+          izin += 1;
+          if (perm[i]['permission_type_id'] == 1) {
+            wfh += 1;
+          }
+          if (perm[i]['permission_type_id'] == 2) {
+            sakit += 1;
+          }
+        }
+
+        // count data hadir
+        for (var i = 0; i < resBody.length; i++) {
+          if (resBody[i]['presence_enter_time'] != null &&
+              resBody[i]['presence_out_time'] != null) {
+            hadir += 1;
+          }
+        }
+      });
+    }
+  }
+
+  getSPK() async {
+    SPK rank = await getRank();
+    if (widget.isMount) {
+      setState(() {
+        spk = rank.data;
+        rank.data!.sort((a, b) => (b['skor']).compareTo(a['skor']));
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    getSPK();
+    getHistory();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget.isMount = false;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +93,7 @@ class DashboardView extends StatelessWidget {
           Container(
             width: deviceWidth(context),
             height: 205 - statusBarHeight(context),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: primaryColor,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(24),
@@ -37,22 +103,53 @@ class DashboardView extends StatelessWidget {
           ),
           Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 32,
               ),
               headerDashboard,
-              SizedBox(
+              const SizedBox(
                 height: 32,
               ),
-              information,
-              SizedBox(
+              _InformationsComponent(
+                  hadir: hadir, sakit: sakit, izin: izin, wfh: wfh),
+              const SizedBox(
                 height: 20,
               ),
-              _MenuActivityComponent(getLocation: getLocation),
-              SizedBox(
+              _MenuActivityComponent(getLocation: widget.getLocation),
+              const SizedBox(
                 height: 20,
               ),
-              announcement,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 25),
+                    child: Text(
+                      "Ranking 5 Dosen Paling Rajin",
+                      style: semiBlackFont.copyWith(fontSize: 14),
+                    ),
+                  ),
+                  Container(
+                    height: 300,
+                    width: MediaQuery.of(context).size.width,
+                    child: ListView.builder(
+                      itemCount: spk!.length >= 5 ? 5 : spk!.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: _RankComponent(
+                            rank: "${index + 1}",
+                            name: spk![index]["nama"],
+                            position: spk![index]["jabatan"],
+                            value: spk![index]["skor"].toString(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
               SizedBox(
                 height: 95,
               ),
@@ -223,6 +320,17 @@ class _LogoutAlertComponent extends StatelessWidget {
 }
 
 class _InformationsComponent extends StatelessWidget {
+  int hadir = 0;
+  int sakit = 0;
+  int izin = 0;
+  int wfh = 0;
+
+  _InformationsComponent({
+    required this.hadir,
+    required this.sakit,
+    required this.izin,
+    required this.wfh,
+  });
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -258,22 +366,22 @@ class _InformationsComponent extends StatelessWidget {
             children: [
               _PresenceInfoComponent(
                 presenceType: "Hadir",
-                totalPresence: 12,
+                totalPresence: hadir,
                 iconPath: 'assets/images/ic_presence.png',
               ),
               _PresenceInfoComponent(
                 presenceType: "Sakit",
-                totalPresence: 1,
+                totalPresence: sakit,
                 iconPath: 'assets/images/ic_sick.png',
               ),
               _PresenceInfoComponent(
                 presenceType: "Izin",
-                totalPresence: 1,
+                totalPresence: izin,
                 iconPath: 'assets/images/ic_cuti.png',
               ),
               _PresenceInfoComponent(
-                presenceType: "Alfa",
-                totalPresence: 2,
+                presenceType: "WFH",
+                totalPresence: wfh,
                 iconPath: 'assets/images/ic_alfa.png',
               ),
             ],
@@ -344,7 +452,7 @@ class _MenuActivityComponentState extends State<_MenuActivityComponent> {
   TextEditingController fileC = TextEditingController();
   bool loading = false;
 
-  late File filePickerVal;
+  File filePickerVal = File("");
 
   selectFile() async {
     FilePickerResult? result = await FilePicker.platform
@@ -454,7 +562,7 @@ class _MenuActivityComponentState extends State<_MenuActivityComponent> {
                                         initialDate: DateTime.now(),
                                         firstDate: DateTime.now(),
                                         lastDate: DateTime(d.year, d.month,
-                                            d.day + 3, 0, 0, 0, 0, 0)))!;
+                                            d.day + 7, 0, 0, 0, 0, 0)))!;
 
                                     dateC.text =
                                         DateFormat('yyyy-MM-dd').format(date);
@@ -505,8 +613,8 @@ class _MenuActivityComponentState extends State<_MenuActivityComponent> {
                               if (formKey.currentState!.validate()) {
                                 izin(
                                     desc: desC.text,
-                                    tgl: dateC.text,
-                                    filePickerVal: filePickerVal,
+                                    // tgl: dateC.text,
+                                    // filePickerVal: filePickerVal,
                                     permTypeId: '2');
                                 desC.clear();
                                 dateC.clear();
@@ -646,68 +754,96 @@ class _MenuComponent extends StatelessWidget {
   }
 }
 
-class _AnnouncementComponent extends StatelessWidget {
+class _RankComponent extends StatelessWidget {
+  String rank;
+  String name;
+  String position;
+  String value;
+  final Random _random = Random();
+  _RankComponent(
+      {required this.rank,
+      required this.name,
+      required this.position,
+      required this.value});
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Pemberitahuan",
-          style: semiBlackFont.copyWith(fontSize: 14),
-        ),
-        SizedBox(
-          height: 16,
-        ),
-        Container(
-          width: defaultWidth(context),
-          height: 70,
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            color: primaryColor,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: Color(0xFFEEEEEE),
-                offset: Offset(0, 5),
-              ),
-            ],
+    String nilai = value;
+    if (value.length > 2) {
+      nilai = value.substring(0, 2);
+      if (value.substring(2, 3) != '.') {
+        nilai = value.substring(0, 3);
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 16,
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/images/megaphone.png',
-                width: 35,
-                height: 35,
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Perubahan Sistem Absensi",
-                    style: semiWhiteFont.copyWith(fontSize: 14),
-                  ),
-                  SizedBox(
-                    height: 2,
-                  ),
-                  Text(
-                    "Absensi menggunakan aplikasi GoAbsensi",
-                    style: semiBlackFont.copyWith(
-                      fontSize: 11.5,
-                      color: Color(0xFFEEEEEE),
+          Container(
+            height: 200,
+            width: MediaQuery.of(context).size.width * 0.85,
+            decoration: BoxDecoration(
+              color: whiteColor,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: primaryColor),
+              boxShadow: const [
+                BoxShadow(
+                    color: Color.fromARGB(255, 232, 143, 143),
+                    blurRadius: 15.0,
+                    offset: Offset(-5, 10)),
+              ],
+            ),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 5.0, bottom: 20),
+                  child: CircleAvatar(
+                    backgroundColor: primaryColor,
+                    child: Text(
+                      rank,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, color: whiteColor),
                     ),
                   ),
-                ],
-              ),
-            ],
+                ),
+                Center(
+                  child: ListTile(
+                    leading: const CircleAvatar(
+                        radius: 50,
+                        child: Image(
+                          image: AssetImage("assets/images/user_pic.png"),
+                          fit: BoxFit.cover,
+                        )),
+                    title: Text(
+                      name,
+                      style: boldBlackFont,
+                    ),
+                    subtitle: Text(position),
+                    trailing: Container(
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: whiteColor,
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(color: primaryColor),
+                      ),
+                      child: Text(
+                        // substring
+                        "$nilai%",
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

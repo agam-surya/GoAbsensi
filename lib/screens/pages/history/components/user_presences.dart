@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../common/common.dart';
 
@@ -7,20 +8,26 @@ class UserPresenceComponent extends StatelessWidget {
   final String absentTime;
   final String absentDate;
   // final String photoURL;
+  final String jenis;
   final String status;
 
   UserPresenceComponent({
     required this.userName,
     required this.absentTime,
     required this.absentDate,
-    required this.status,
+    required this.jenis,
+    this.status = '',
   });
+
+  formatDate(String date) {
+    final DateTime dateF = DateFormat('yyyy-MM-dd').parse(date);
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formatted = formatter.format(dateF);
+    return formatted;
+  }
 
   @override
   Widget build(BuildContext context) {
-    // String time = DateFormat('hh : mm : ss')
-    //     .format(DateTime.fromMillisecondsSinceEpoch(absentTime));
-
     return Container(
       width: deviceWidth(context),
       height: 90,
@@ -63,7 +70,7 @@ class UserPresenceComponent extends StatelessWidget {
                 height: 6,
               ),
               Text(
-                absentDate,
+                absentTime,
                 style: semiBlackFont.copyWith(
                   fontSize: 11,
                 ),
@@ -79,16 +86,16 @@ class UserPresenceComponent extends StatelessWidget {
                     height: 14,
                     margin: const EdgeInsets.only(right: 8),
                     decoration: BoxDecoration(
-                      color: (status.toLowerCase() == "keluar")
+                      color: (jenis.toLowerCase() == "keluar")
                           ? primaryColor
-                          : (status.toLowerCase() == "masuk")
+                          : (jenis.toLowerCase() == "masuk")
                               ? successColor
                               : ijinColor,
                       borderRadius: BorderRadius.circular(2),
                     ),
                     child: Center(
                       child: Text(
-                        status,
+                        jenis,
                         style: boldWhiteFont.copyWith(
                           fontSize: 10,
                         ),
@@ -96,8 +103,8 @@ class UserPresenceComponent extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    (status.toLowerCase() == "izin")
-                        ? ''
+                    (jenis.toLowerCase() == "izin")
+                        ? (absentTime + ' - ' + formatDate(absentDate))
                         : (absentTime + " WIB"),
                     style: semiBlackFont.copyWith(
                       fontSize: 11,
@@ -110,14 +117,37 @@ class UserPresenceComponent extends StatelessWidget {
           const Spacer(
             flex: 1,
           ),
-          Image.asset(
-            (status.toLowerCase() == "masuk")
-                ? 'assets/images/entry.png'
-                : (status.toLowerCase() == "keluar")
-                    ? "assets/images/ic_absen_pulang.png"
-                    : "assets/images/warn.png",
-            width: 24,
-            height: 24,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              status == null || status == ''
+                  ? const Text('')
+                  : Container(
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                          color: status != 'null' && status != ''
+                              ? successColor
+                              : ijinColor,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(5),
+                            bottomRight: Radius.circular(5),
+                          )),
+                      child: Text(
+                          status != 'null' && status != ''
+                              ? status
+                              : 'menunggu..',
+                          style: semiBlackFont.copyWith(fontSize: 10)),
+                    ),
+              Image.asset(
+                (jenis.toLowerCase() == "masuk")
+                    ? 'assets/images/entry.png'
+                    : (jenis.toLowerCase() == "keluar")
+                        ? "assets/images/ic_absen_pulang.png"
+                        : "assets/images/warn.png",
+                width: 24,
+                height: 24,
+              ),
+            ],
           ),
         ],
       ),

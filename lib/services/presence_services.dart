@@ -22,13 +22,12 @@ Future<HistoryApiResponse> showPresence() async {
     switch (response.statusCode) {
       case 200:
         apiResponse.description = '';
-        // print(jsonDecode(response.body)[0]);
-        // print("response.body");
         apiResponse.data =
             HistoryApiResponse.fromJson(jsonDecode(response.body)).data;
         apiResponse.name =
             HistoryApiResponse.fromJson(jsonDecode(response.body)).name;
-        // apiResponse.data = response.body as List;
+        apiResponse.permission =
+            HistoryApiResponse.fromJson(jsonDecode(response.body)).permission;
         break;
       case 401:
         apiResponse.error = unauthorized;
@@ -40,7 +39,6 @@ Future<HistoryApiResponse> showPresence() async {
   } catch (e) {
     apiResponse.error = serverError;
   }
-  // print(apiResponse.data![0]['id']);
   return apiResponse;
 }
 
@@ -85,7 +83,6 @@ Future<AbsenApiResponse> formMasuk(
           'lat': lat,
           'long': long
         });
-
     switch (response.statusCode) {
       case 200:
         apiResponse.description = 'Berhasil melakukan Absensi';
@@ -128,7 +125,6 @@ Future<AbsenApiResponse> formKeluar(
           'lat': lat,
           'long': long
         });
-    print(response.statusCode);
     switch (response.statusCode) {
       case 200:
         apiResponse.description =
@@ -170,24 +166,27 @@ Future<AbsenApiResponse> izin(
     var response = http.MultipartRequest('POST', Uri.parse(izinUrl));
 
     response.headers.addAll(headers);
-    response.fields['desciption'] = desc;
+    response.fields['description'] = desc;
     response.fields['permission_type_id'] = permTypeId;
-    response.fields['tanggal'] = tgl!;
 
-    response.files.add(http.MultipartFile('file',
-        filePickerVal!.readAsBytes().asStream(), filePickerVal.lengthSync(),
-        filename: filePickerVal.path.split("/").last));
+    if (tgl != null) {
+      response.fields['tanggal'] = tgl;
+    }
+    if (filePickerVal != null) {
+      response.files.add(http.MultipartFile('file',
+          filePickerVal.readAsBytes().asStream(), filePickerVal.lengthSync(),
+          filename: filePickerVal.path.split("/").last));
+    }
 
     var res = await response.send();
     var responseBytes = await res.stream.toBytes();
     var responseString = utf8.decode(responseBytes);
-    print(res.request!);
     //debug
-    debugPrint("response code: " + res.statusCode.toString());
-    debugPrint("response: " + responseString.toString());
+    // debugPrint("response code: " + res.statusCode.toString());
+    // debugPrint("response: " + responseString.toString());
 
     final dataDecode = jsonDecode(responseString);
-    debugPrint(dataDecode.toString());
+    // debugPrint(dataDecode.toString());
 
     switch (res.statusCode) {
       case 200:

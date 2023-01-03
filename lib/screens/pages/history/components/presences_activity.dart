@@ -20,30 +20,35 @@ class _PresenceActivityComponentState extends State<PresenceActivityComponent> {
     HistoryApiResponse res = await showPresence();
 
     final resBody = res.data as List;
+    final perm = res.permission as List;
     if (widget.isMount) {
       setState(() {
+        if (perm.length > 0) {
+          for (var i = 0; i < perm.length; i++) {
+            dataHistory.add({
+              "jenis": "Izin",
+              "waktu": "${perm[i]['tanggal_start_izin']}",
+              "absentDate": "${perm[i]['tanggal_end_izin']}",
+              "status": "${perm[i]['aksi']}",
+            });
+          }
+        }
         for (var i = 0; i < resBody.length; i++) {
           if (resBody[i]['presence_enter_time'] != null) {
             dataHistory.add({
-              "status": "Masuk",
+              "jenis": "Masuk",
               "absentDate": "${resBody[i]['presence_date']}",
               "waktu": "${resBody[i]['presence_enter_time']}",
             });
           }
           if (resBody[i]['presence_out_time'] != null) {
             dataHistory.add({
-              "status": "Keluar",
+              "jenis": "Keluar",
               "absentDate": "${resBody[i]['presence_date']}",
               "waktu": "${resBody[i]['presence_out_time']}",
             });
           } else if (resBody[i]['presence_enter_time'] == null &&
-              resBody[i]['presence_out_time'] == null) {
-            dataHistory.add({
-              "status": "Izin",
-              "absentDate": "${resBody[i]['presence_date']}",
-              "waktu": "${resBody[i]['presence_date']}",
-            });
-          }
+              resBody[i]['presence_out_time'] == null) {}
         }
         username = res.name!;
       });
@@ -124,7 +129,8 @@ class _PresenceActivityComponentState extends State<PresenceActivityComponent> {
                           userName: username,
                           absentTime: data['waktu'],
                           absentDate: data['absentDate'],
-                          status: data['status'],
+                          jenis: data['jenis'],
+                          status: data['status'] ?? '',
                         );
                 }),
           )

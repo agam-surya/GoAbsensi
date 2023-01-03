@@ -1,6 +1,6 @@
 part of "common.dart";
 
-const webUrl = 'https://cobaabensipw.000webhostapp.com';
+const webUrl = 'https://goabsensi-beta-2.000webhostapp.com';
 const baseUrl = webUrl + '/api';
 const loginUrl = baseUrl + '/login';
 const registerUrl = baseUrl + '/register';
@@ -12,6 +12,7 @@ const presenceIn = baseUrl + '/presensi/form_masuk';
 const presenceOut = baseUrl + '/presensi/form_keluar';
 const presenceShow = baseUrl + '/presensi';
 const izinUrl = baseUrl + '/permission-create';
+const spkUrl = baseUrl + '/SPK';
 
 // --------ERROR---------
 const serverError = 'Server error';
