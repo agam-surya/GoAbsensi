@@ -9,8 +9,9 @@ import '../common/common.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/history.dart';
+import '../screens/login.dart';
 
-Future<HistoryApiResponse> showPresence() async {
+Future<HistoryApiResponse> showPresence(BuildContext context) async {
   HistoryApiResponse apiResponse = HistoryApiResponse();
   try {
     String token = await getToken();
@@ -31,6 +32,11 @@ Future<HistoryApiResponse> showPresence() async {
         break;
       case 401:
         apiResponse.error = unauthorized;
+        logout().then((value) => {
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => Login()),
+                (route) => false)
+          });
         break;
       default:
         apiResponse.error = somethingwentwrong;

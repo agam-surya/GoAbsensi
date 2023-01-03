@@ -17,7 +17,7 @@ class _PresenceActivityComponentState extends State<PresenceActivityComponent> {
   String username = 'null';
 
   getHistory() async {
-    HistoryApiResponse res = await showPresence();
+    HistoryApiResponse res = await showPresence(context);
 
     final resBody = res.data as List;
     final perm = res.permission as List;

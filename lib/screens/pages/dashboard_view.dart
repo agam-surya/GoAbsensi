@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:goAbsensi/common/time_utils.dart';
 import 'package:goAbsensi/models/absent_api_res.dart';
 import 'package:goAbsensi/models/spk.dart';
 import 'package:goAbsensi/screens/pages/history/histories_view.dart';
@@ -35,7 +36,7 @@ class _DashboardViewState extends State<DashboardView> {
   int wfh = 0;
 
   getHistory() async {
-    HistoryApiResponse res = await showPresence();
+    HistoryApiResponse res = await showPresence(context);
 
     final resBody = res.data as List;
     final perm = res.permission as List;
@@ -557,15 +558,11 @@ class _MenuActivityComponentState extends State<_MenuActivityComponent> {
                                     FocusScope.of(context)
                                         .requestFocus(FocusNode());
 
-                                    DateTime date = (await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime.now(),
-                                        lastDate: DateTime(d.year, d.month,
-                                            d.day + 7, 0, 0, 0, 0, 0)))!;
+                                    DateTime? date =
+                                        await pickDate(context, dayLong: 7);
 
                                     dateC.text =
-                                        DateFormat('yyyy-MM-dd').format(date);
+                                        DateFormat('yyyy-MM-dd').format(date!);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     primary: primaryColor,

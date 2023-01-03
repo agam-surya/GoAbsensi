@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goAbsensi/common/time_utils.dart';
 import 'package:timer_builder/timer_builder.dart';
 
 import '../../../../common/common.dart';
@@ -38,7 +39,7 @@ class ClockPresenceComponent extends StatelessWidget {
             const Duration(seconds: 1),
             builder: (context) {
               return Text(
-                '16:30:12',
+                getSystemTime(),
                 style: boldBlackFont.copyWith(
                   color: primaryColor,
                   fontSize: 24,

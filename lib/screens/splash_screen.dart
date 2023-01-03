@@ -65,7 +65,7 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       try {
         ApiResponse response =
-            await getUserDetail().timeout(const Duration(seconds: 4));
+            await getUserDetail().timeout(const Duration(seconds: 6));
 
         if (response.error == null) {
           Navigator.of(context).pushAndRemoveUntil(
