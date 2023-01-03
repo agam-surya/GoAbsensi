@@ -584,13 +584,23 @@ class _MenuActivityComponentState extends State<_MenuActivityComponent> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (formKey.currentState!.validate()) {
-                                izin(
+                                AbsenApiResponse i = await izin(
                                     desc: desC.text,
                                     // tgl: dateC.text,
                                     // filePickerVal: filePickerVal,
                                     permTypeId: '1');
+                                if (i.error == '') {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text('Izin Berhasil !!')));
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content:
+                                              Text('Gagal melakukan izin !!')));
+                                }
                                 desC.clear();
                                 dateC.clear();
                                 fileC.clear();
@@ -603,7 +613,7 @@ class _MenuActivityComponentState extends State<_MenuActivityComponent> {
                               fixedSize: MaterialStateProperty.all(
                                   const Size(100, 50)),
                             ),
-                            child: Text("WFH"),
+                            child: const Text("WFH"),
                           ),
                           ElevatedButton(
                             onPressed: () async {
@@ -666,7 +676,6 @@ class _MenuActivityComponentState extends State<_MenuActivityComponent> {
               onTap: () async {
                 await createPresence();
                 var lok = await widget.getLocation;
-
                 AbsenApiResponse absen =
                     await formMasuk(lat: lok["lat"]!, long: lok["long"]!);
                 absenAlertdialog(

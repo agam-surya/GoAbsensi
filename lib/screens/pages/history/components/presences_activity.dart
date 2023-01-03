@@ -27,8 +27,8 @@ class _PresenceActivityComponentState extends State<PresenceActivityComponent> {
           for (var i = 0; i < perm.length; i++) {
             dataHistory.add({
               "jenis": "Izin",
-              "waktu": "${perm[i]['tanggal_start_izin']}",
-              "absentDate": "${perm[i]['tanggal_end_izin']}",
+              "waktu": "${perm[i]['tanggal_end_izin']}",
+              "absentDate": "${perm[i]['tanggal_start_izin']}",
               "status": "${perm[i]['aksi']}",
             });
           }
@@ -51,6 +51,8 @@ class _PresenceActivityComponentState extends State<PresenceActivityComponent> {
               resBody[i]['presence_out_time'] == null) {}
         }
         username = res.name!;
+        dataHistory
+            .sort((a, b) => (b['absentDate']).compareTo(a['absentDate']));
       });
     }
   }
@@ -86,7 +88,8 @@ class _PresenceActivityComponentState extends State<PresenceActivityComponent> {
             height: 16,
           ),
           Container(
-            height: (10 * 74).toDouble(),
+            // height: (10 * 74).toDouble(),
+            height: 525,
             margin: const EdgeInsets.symmetric(horizontal: defaultMargin),
             decoration: const BoxDecoration(
               border: Border(
@@ -122,7 +125,7 @@ class _PresenceActivityComponentState extends State<PresenceActivityComponent> {
                         )
                       ])
                 : ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
+                    // physics: const NeverScrollableScrollPhysics(),
                     scrollDirection: Axis.vertical,
                     itemCount: dataHistory.length,
                     itemBuilder: (context, index) {
@@ -130,7 +133,7 @@ class _PresenceActivityComponentState extends State<PresenceActivityComponent> {
                       var data = datas[index];
 
                       return UserPresenceComponent(
-                        userName: username,
+                        userName: index.toString(),
                         absentTime: data['waktu'],
                         absentDate: data['absentDate'],
                         jenis: data['jenis'],

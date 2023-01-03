@@ -70,7 +70,7 @@ class UserPresenceComponent extends StatelessWidget {
                 height: 6,
               ),
               Text(
-                absentTime,
+                absentDate,
                 style: semiBlackFont.copyWith(
                   fontSize: 11,
                 ),
