@@ -126,7 +126,9 @@ class UserPresenceComponent extends StatelessWidget {
                       padding: const EdgeInsets.all(3),
                       decoration: BoxDecoration(
                           color: status != 'null' && status != ''
-                              ? successColor
+                              ? status.toString() == 'reject'
+                                  ? primaryColor
+                                  : successColor
                               : ijinColor,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(5),

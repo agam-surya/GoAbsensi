@@ -559,7 +559,7 @@ class _MenuActivityComponentState extends State<_MenuActivityComponent> {
                                         .requestFocus(FocusNode());
 
                                     DateTime? date =
-                                        await pickDate(context, dayLong: 7);
+                                        await pickDate(context, dayLong: 3);
 
                                     dateC.text =
                                         DateFormat('yyyy-MM-dd').format(date!);
@@ -606,13 +606,21 @@ class _MenuActivityComponentState extends State<_MenuActivityComponent> {
                             child: Text("WFH"),
                           ),
                           ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (formKey.currentState!.validate()) {
-                                izin(
-                                    desc: desC.text,
-                                    // tgl: dateC.text,
-                                    // filePickerVal: filePickerVal,
-                                    permTypeId: '2');
+                                AbsenApiResponse i = await izin(
+                                    desc: desC.text, permTypeId: '2');
+
+                                if (i.error == '') {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text('Izin Berhasil !!')));
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content:
+                                              Text('Gagal melakukan izin !!')));
+                                }
                                 desC.clear();
                                 dateC.clear();
                                 fileC.clear();

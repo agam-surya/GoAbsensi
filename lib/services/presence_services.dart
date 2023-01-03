@@ -33,10 +33,10 @@ Future<HistoryApiResponse> showPresence(BuildContext context) async {
       case 401:
         apiResponse.error = unauthorized;
         logout().then((value) => {
-            Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => Login()),
-                (route) => false)
-          });
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => Login()),
+                  (route) => false)
+            });
         break;
       default:
         apiResponse.error = somethingwentwrong;
@@ -196,16 +196,13 @@ Future<AbsenApiResponse> izin(
 
     switch (res.statusCode) {
       case 200:
-        // apiResponse.description =
-        //     AbsenApiResponse.fromJson(jsonDecode(response.body)).description;
         break;
       case 401:
         apiResponse.error = unauthorized;
-        // apiResponse.description =
-        //     AbsenApiResponse.fromJson(jsonDecode(response.body)).description;
         break;
       default:
         apiResponse.error = somethingwentwrong;
+
         break;
     }
   } catch (e) {

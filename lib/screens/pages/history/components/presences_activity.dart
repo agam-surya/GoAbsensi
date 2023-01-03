@@ -69,12 +69,6 @@ class _PresenceActivityComponentState extends State<PresenceActivityComponent> {
 
   @override
   Widget build(BuildContext context) {
-    int startTimeToday = DateTime.now()
-        .subtract(const Duration(hours: 12))
-        .millisecondsSinceEpoch;
-    int endTimeToday =
-        DateTime.now().add(const Duration(hours: 12)).millisecondsSinceEpoch;
-
     return Padding(
       padding: EdgeInsets.only(bottom: 50),
       child: Column(
@@ -113,26 +107,36 @@ class _PresenceActivityComponentState extends State<PresenceActivityComponent> {
                 ),
               ),
             ),
-            child: ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                itemCount: dataHistory.length,
-                itemBuilder: (context, index) {
-                  var datas = dataHistory;
-                  var data = datas[index];
-
-                  return datas.length == 0
-                      ? Center(
-                          child: Text("Data History Kehadiran Anda Kosong"),
+            child: dataHistory.isEmpty
+                ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20.0),
+                          child: Text(
+                            "Data History Kehadiran Anda Kosong",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
                         )
-                      : UserPresenceComponent(
-                          userName: username,
-                          absentTime: data['waktu'],
-                          absentDate: data['absentDate'],
-                          jenis: data['jenis'],
-                          status: data['status'] ?? '',
-                        );
-                }),
+                      ])
+                : ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    itemCount: dataHistory.length,
+                    itemBuilder: (context, index) {
+                      var datas = dataHistory;
+                      var data = datas[index];
+
+                      return UserPresenceComponent(
+                        userName: username,
+                        absentTime: data['waktu'],
+                        absentDate: data['absentDate'],
+                        jenis: data['jenis'],
+                        status: data['status'] ?? '',
+                      );
+                    }),
           )
         ],
       ),
