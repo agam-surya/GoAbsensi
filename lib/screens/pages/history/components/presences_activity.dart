@@ -133,7 +133,7 @@ class _PresenceActivityComponentState extends State<PresenceActivityComponent> {
                       var data = datas[index];
 
                       return UserPresenceComponent(
-                        userName: index.toString(),
+                        userName: username,
                         absentTime: data['waktu'],
                         absentDate: data['absentDate'],
                         jenis: data['jenis'],

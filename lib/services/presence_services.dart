@@ -131,6 +131,7 @@ Future<AbsenApiResponse> formKeluar(
           'lat': lat,
           'long': long
         });
+    print(response.statusCode);
     switch (response.statusCode) {
       case 200:
         apiResponse.description =
