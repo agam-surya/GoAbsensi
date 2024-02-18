@@ -197,31 +197,29 @@ class _HeaderDashboardComponent extends StatelessWidget {
         Spacer(
           flex: 1,
         ),
-        Container(
+        SizedBox(
           width: 38,
           height: 38,
-          child: RaisedButton(
-            color: maroonColor,
-            elevation: 0,
-            hoverElevation: 0,
-            focusElevation: 0,
-            highlightElevation: 0,
-            padding: EdgeInsets.zero,
-            splashColor: Colors.black.withOpacity(0.3),
-            visualDensity: VisualDensity.comfortable,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Image.asset(
-              'assets/images/ic_logout.png',
-              width: 18,
-              height: 18,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: maroonColor, // background color
+              elevation: 0,
+              onPrimary: Colors.black.withOpacity(0.3), // splash color
+              visualDensity: VisualDensity.comfortable,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6),
+              ),
             ),
             onPressed: () {
               logout().then((value) => Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => const Login()),
                   (route) => false));
             },
+            child: Image.asset(
+              'assets/images/ic_logout.png',
+              width: 18,
+              height: 18,
+            ),
           ),
         ),
         SizedBox(
@@ -279,36 +277,46 @@ class _LogoutAlertComponent extends StatelessWidget {
                 Container(
                   width: 105,
                   height: 40,
-                  child: FlatButton(
-                    color: Color(0xFFCDCBCB),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(
-                      "Batalkan",
-                      style: semiWhiteFont.copyWith(fontSize: 14),
+                  child: TextButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Color(0xFFCDCBCB)),
+                      shape: MaterialStateProperty.all<OutlinedBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                      ),
                     ),
                     onPressed: () {
                       Navigator.pop(context);
                     },
+                    child: Text(
+                      "Batalkan",
+                      style: semiWhiteFont.copyWith(fontSize: 14),
+                    ),
                   ),
                 ),
                 Container(
                   width: 105,
                   height: 40,
-                  child: FlatButton(
-                    color: primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(
-                      "Logout",
-                      style: semiWhiteFont.copyWith(fontSize: 14),
+                  child: TextButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(primaryColor),
+                      shape: MaterialStateProperty.all<OutlinedBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                      ),
                     ),
                     onPressed: () async {
                       // await AuthServices.logOut();
                       // Navigator.pushReplacementNamed(context, Wrapper.routeName);
                     },
+                    child: Text(
+                      "Logout",
+                      style: semiWhiteFont.copyWith(fontSize: 14),
+                    ),
                   ),
                 ),
               ],

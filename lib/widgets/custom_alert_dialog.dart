@@ -51,18 +51,23 @@ class CustomAlertDialog extends StatelessWidget {
             Container(
               width: 222,
               height: 40,
-              child: FlatButton(
-                color: primaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  "Baiklah",
-                  style: semiWhiteFont.copyWith(fontSize: 14),
+              child: TextButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(primaryColor),
+                  shape: MaterialStateProperty.all<OutlinedBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
                 ),
                 onPressed: () {
                   Navigator.pop(context);
                 },
+                child: Text(
+                  "Baiklah",
+                  style: semiWhiteFont.copyWith(fontSize: 14),
+                ),
               ),
             ),
           ],
