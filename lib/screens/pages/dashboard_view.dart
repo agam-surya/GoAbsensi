@@ -202,9 +202,9 @@ class _HeaderDashboardComponent extends StatelessWidget {
           height: 38,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: maroonColor, // background color
+              backgroundColor: maroonColor, // background color
               elevation: 0,
-              onPrimary: Colors.black.withOpacity(0.3), // splash color
+              shadowColor: Colors.black.withOpacity(0.3), // splash color
               visualDensity: VisualDensity.comfortable,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(6),
@@ -520,7 +520,7 @@ class _MenuActivityComponentState extends State<_MenuActivityComponent> {
                                     selectFile();
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: primaryColor,
+                                    backgroundColor: primaryColor,
                                     minimumSize: const Size(76, 48),
                                     maximumSize: const Size(100, 48),
                                     shape: RoundedRectangleBorder(
@@ -573,7 +573,7 @@ class _MenuActivityComponentState extends State<_MenuActivityComponent> {
                                         DateFormat('yyyy-MM-dd').format(date!);
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: primaryColor,
+                                    backgroundColor: primaryColor,
                                     minimumSize: const Size(76, 48),
                                     maximumSize: const Size(100, 48),
                                     shape: RoundedRectangleBorder(

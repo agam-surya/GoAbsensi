@@ -111,10 +111,10 @@ class _PresenceActivityComponentState extends State<PresenceActivityComponent> {
               ),
             ),
             child: dataHistory.isEmpty
-                ? Row(
+                ? const Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children:  [
                         Padding(
                           padding: EdgeInsets.symmetric(vertical: 20.0),
                           child: Text(

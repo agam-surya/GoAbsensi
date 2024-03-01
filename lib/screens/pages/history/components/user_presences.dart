@@ -30,7 +30,7 @@ class UserPresenceComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: deviceWidth(context),
-      height: 90,
+      height: 100,
       padding: const EdgeInsets.symmetric(
         horizontal: 16,
         vertical: 14,
